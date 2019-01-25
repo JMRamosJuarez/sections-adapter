@@ -17,9 +17,9 @@ abstract class SectionsAdapter<H : Section<I>, I : Section.Item, HV : SectionsAd
 
     private var itemsPositions: MutableList<Int> = mutableListOf()
 
-    abstract fun onBindHeader(headerViewHolder: HV?, header: H)
+    abstract fun onBindHeader(headerViewHolder: HV, header: H)
 
-    abstract fun onBindItem(itemViewHolder: IV?, item: I)
+    abstract fun onBindItem(itemViewHolder: IV, header: H, item: I)
 
     override fun getItemCount(): Int {
         this.viewTypes = mutableListOf()
@@ -49,12 +49,15 @@ abstract class SectionsAdapter<H : Section<I>, I : Section.Item, HV : SectionsAd
     }
 
     override fun onBindViewHolder(holder: SectionViewHolder<HV, IV>, position: Int) {
-        if (holder.headerViewHolder != null) {
+        val headerViewHolder = holder.headerViewHolder
+        val itemViewHolder = holder.itemViewHolder
+        if (headerViewHolder != null) {
             val section = this._sections[this.headerPositions[position]]
-            this.onBindHeader(holder.headerViewHolder, section)
-        } else {
+            this.onBindHeader(headerViewHolder, section)
+        } else if (itemViewHolder != null) {
             val section = this._sections[this.headerPositions[position]]
-            this.onBindItem(holder.itemViewHolder, section.getItems()[this.itemsPositions[position]])
+            val item = section.getItems()[this.itemsPositions[position]]
+            this.onBindItem(itemViewHolder, section, item)
         }
     }
 

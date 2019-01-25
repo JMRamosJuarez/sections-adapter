@@ -1,11 +1,7 @@
 package com.jmrj.example.sections.adapter
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu
-import android.view.MenuItem
-
+import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -15,25 +11,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        val adapter = CinemasAdapter(this)
+        this.movies_recycler_view.adapter = adapter
+        adapter.updateSections(this.generateItems(5, 10))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
+    private fun generateItems(cinemas: Int, movies: Int): List<Cinema> {
+        val result: MutableList<Cinema> = mutableListOf()
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        for (i in 1..cinemas) {
+            val cinema = Cinema("Cinema $i")
+            val ms: MutableList<Movie> = mutableListOf()
+            for (j in 1..movies) {
+                val m =
+                    Movie("Movie $j", "https://i.pinimg.com/originals/c0/df/c5/c0dfc52d8a19ebba5599e48251b16510.jpg")
+                ms.add(m)
+            }
+            cinema.movies = ms
+            result.add(cinema)
         }
+        return result
     }
 }

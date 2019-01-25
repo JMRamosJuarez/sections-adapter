@@ -4,7 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import com.jmrj.sections.adapter.SectionsAdapter
+import com.squareup.picasso.Picasso
 
 class CinemasAdapter(private val context: Context) :
     SectionsAdapter<Cinema, Movie, CinemasAdapter.CinemaViewHolder, CinemasAdapter.MovieViewHolder>() {
@@ -16,12 +20,24 @@ class CinemasAdapter(private val context: Context) :
 
     private val inflater: LayoutInflater by lazy { LayoutInflater.from(this.context) }
 
-    override fun onBindHeader(headerViewHolder: CinemaViewHolder?, header: Cinema) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onBindHeader(headerViewHolder: CinemaViewHolder, header: Cinema) {
+        headerViewHolder.titleTextView.text = header.name
+        headerViewHolder.titleTextView.setOnClickListener {
+            Toast.makeText(this.context, header.name, Toast.LENGTH_SHORT).show()
+        }
     }
 
-    override fun onBindItem(itemViewHolder: MovieViewHolder?, item: Movie) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onBindItem(itemViewHolder: MovieViewHolder, header: Cinema, item: Movie) {
+        itemViewHolder.titleTextView.text = item.title
+        Picasso
+            .get()
+            .load(item.posterUrl)
+            .error(R.drawable.placeholder)
+            .placeholder(R.drawable.placeholder)
+            .into(itemViewHolder.movieImageView)
+        itemViewHolder.movieImageView.setOnClickListener {
+            Toast.makeText(this.context, "${header.name}, ${item.title}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onCreateViewHolder(
@@ -35,7 +51,12 @@ class CinemasAdapter(private val context: Context) :
         }
     }
 
-    class CinemaViewHolder(itemView: View) : SectionsAdapter.HeaderViewHolder(itemView)
+    class CinemaViewHolder(itemView: View) : SectionsAdapter.HeaderViewHolder(itemView) {
+        val titleTextView: TextView = this.itemView.findViewById(R.id.title_text_view)
+    }
 
-    class MovieViewHolder(itemView: View) : SectionsAdapter.ItemViewHolder(itemView)
+    class MovieViewHolder(itemView: View) : SectionsAdapter.ItemViewHolder(itemView) {
+        val movieImageView: ImageView = this.itemView.findViewById(R.id.movie_image_view)
+        val titleTextView: TextView = this.itemView.findViewById(R.id.movie_title_text_view)
+    }
 }
